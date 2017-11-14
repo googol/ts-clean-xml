@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "declaration": true,
+        "target": "es5",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "noUnusedLocals": true,
+        "lib": [
+            "ES5"
+        ]
+    },
+    "files": [
+        "index.ts"
+    ]
+}
