@@ -1,0 +1,28 @@
+{
+  "name": "ts-xml-query",
+  "version": "0.0.0",
+  "description": "A helper for querying the structure of xml documents",
+  "main": "dist/cjs/index.js",
+  "module": "dist/modules/index.js",
+  "typings": "dist/modules/index.d.ts",
+  "engines": {
+    "node": "8.9.1"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "npm run lint && npm run buildCommonjs && npm run buildModules",
+    "buildCommonjs": "tsc --project tsconfig.commonjs.json",
+    "buildModules": "tsc --project tsconfig.modules.json",
+    "lint": "tslint --format prose --project tsconfig.base.json"
+  },
+  "license": "UNLICENCED",
+  "devDependencies": {
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "files": [
+    "dist"
+  ]
+}
