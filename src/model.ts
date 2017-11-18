@@ -1,6 +1,3 @@
-export const textNodeSpecifier: '__text__' = '__text__';
-export type TextNodeSpecifier = typeof textNodeSpecifier;
-
 export interface XmlName {
     uri: string;
     local: string;
@@ -9,29 +6,27 @@ export interface XmlName {
 export type XmlNameSource = XmlName | string;
 
 export interface XmlElement {
-    $: Record<string, Attribute | undefined> | undefined;
-    $$: ChildNode[];
-    '#name': string;
-    $ns: XmlName;
+    type: 'element';
+    children: ChildNode[];
+    attributes: Attribute[];
+    name: XmlName;
 }
 
 export interface TextNode {
-    '#name': TextNodeSpecifier;
-    _: string;
+    type: 'text';
+    content: string;
 }
 
 export type ChildNode = XmlElement | TextNode;
 
 export interface Attribute {
-    name: string;
+    type: 'attribute';
+    name: XmlName;
     value: string;
-    prefix: string;
-    local: string;
-    uri: string;
 }
 
-export const isXmlElement = (node: ChildNode): node is XmlElement => node['#name'] !== textNodeSpecifier;
-export const isTextNode = (node: ChildNode): node is TextNode => node['#name'] === textNodeSpecifier;
+export const isXmlElement = (node: ChildNode): node is XmlElement => node.type === 'element';
+export const isTextNode = (node: ChildNode): node is TextNode => node.type === 'text';
 
 export const namespaced = (namespaceUri: string) => (local: string): XmlName => ({ local, uri: namespaceUri });
 export const globalName = namespaced('');
