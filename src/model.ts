@@ -25,6 +25,24 @@ export interface Attribute {
     value: string;
 }
 
+export const element = (name: XmlNameSource, attributes: Attribute[], children: ChildNode[]): XmlElement => ({
+    type: 'element',
+    name: fromXmlNameSource(name),
+    attributes,
+    children,
+});
+
+export const text = (content: string): TextNode => ({
+    type: 'text',
+    content,
+});
+
+export const attribute = (name: XmlNameSource, value: string): Attribute => ({
+    type: 'attribute',
+    name: fromXmlNameSource(name),
+    value,
+});
+
 export const isXmlElement = (node: ChildNode): node is XmlElement => node.type === 'element';
 export const isTextNode = (node: ChildNode): node is TextNode => node.type === 'text';
 
