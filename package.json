@@ -15,7 +15,7 @@
     "buildModules": "tsc --project tsconfig.json",
     "lint": "tslint --format prose --project tsconfig.base.json"
   },
-  "license": "UNLICENCED",
+  "license": "MIT",
   "devDependencies": {
     "@types/xml2js": "^0.4.1",
     "tslint": "^5.8.0",
