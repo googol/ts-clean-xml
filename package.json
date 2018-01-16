@@ -1,7 +1,7 @@
 {
-  "name": "ts-xml-query",
+  "name": "ts-clean-xml",
   "version": "0.0.0",
-  "description": "A helper for querying the structure of xml documents",
+  "description": "An xml parser with a predictable object model for typescript & javascript",
   "main": "dist/cjs/index.js",
   "module": "dist/modules/index.js",
   "typings": "dist/modules/index.d.ts",
