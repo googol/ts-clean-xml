@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/xml2js": "^0.4.1",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.1"
+    "typescript": "^2.6.2"
   },
   "dependencies": {
     "xml2js": "^0.4.19"
