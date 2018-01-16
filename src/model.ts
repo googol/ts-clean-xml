@@ -1,29 +1,29 @@
 export interface XmlName {
-    uri: string;
-    local: string;
+    readonly uri: string;
+    readonly local: string;
 }
 
 export type XmlNameSource = XmlName | string;
 
 export interface XmlElement {
-    type: 'element';
-    children: ChildNode[];
-    attributes: Attribute[];
-    name: XmlName;
+    readonly type: 'element';
+    readonly children: ReadonlyArray<ChildNode>;
+    readonly attributes: ReadonlyArray<Attribute>;
+    readonly name: XmlName;
 }
 
 export interface TextNode {
-    type: 'text';
-    content: string;
+    readonly type: 'text';
+    readonly content: string;
 }
 
 export type ChildNode = XmlElement | TextNode;
 export type ChildNodeSource = ChildNode | string;
 
 export interface Attribute {
-    type: 'attribute';
-    name: XmlName;
-    value: string;
+    readonly type: 'attribute';
+    readonly name: XmlName;
+    readonly value: string;
 }
 
 export const isXmlElement = (node: ChildNode): node is XmlElement => node.type === 'element';

@@ -22,7 +22,7 @@ export const getDescendantNodes = (element: XmlElement): ChildNode[] => {
 
     for (let current = stack.shift(); current !== undefined; current = stack.shift()) {
         if (isXmlElement(current)) {
-            for (const child of current.children.reverse()) {
+            for (const child of Array.from(current.children).reverse()) {
                 stack.unshift(child);
             }
         }
