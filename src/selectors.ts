@@ -55,5 +55,5 @@ export const hasTextValue = (value: string) => (element: XmlElement): boolean =>
         return false;
     }
     const single = element.children[0];
-    return single.type === 'text' && single.content === value;
+    return isTextNode(single) && single.content === value;
 };

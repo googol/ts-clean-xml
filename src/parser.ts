@@ -1,5 +1,5 @@
 import { parseString as parseString_, OptionsV2 } from 'xml2js';
-import { XmlElement, TextNode, Attribute } from './model';
+import { namespaced, element, attribute, text, XmlElement, TextNode, Attribute } from './model';
 
 const xmlOptions: OptionsV2 = {
     xmlns: true,
@@ -62,35 +62,21 @@ export function parseString(xmlString: string): Promise<XmlElement> {
 }
 
 function convertXmlElement({ $, $$, $ns }: Xml2JsShim.XmlElement): XmlElement {
-    return {
-        type: 'element',
-        attributes: $ === undefined ? [] : convertAttributes($),
-        children: $$ === undefined ? [] : $$.map((child) => Xml2JsShim.isTextNode(child) ? convertTextNode(child) : convertXmlElement(child)),
-        name: {
-            uri: $ns.uri,
-            local: $ns.local,
-        },
-    };
+    return element(
+        namespaced($ns.uri)($ns.local),
+        $ === undefined ? [] : convertAttributes($),
+        $$ === undefined ? [] : $$.map((child) => Xml2JsShim.isTextNode(child) ? convertTextNode(child) : convertXmlElement(child)),
+    );
 }
 
 function convertTextNode({ _ }: Xml2JsShim.TextNode): TextNode {
-    return {
-        type: 'text',
-        content: _,
-    };
+    return text(_);
 }
 
 function convertAttributes(attributes: Record<string, Xml2JsShim.Attribute | undefined>): Attribute[] {
     return Object.keys(attributes).map((key): Attribute => {
-        const attribute = attributes[key]!;
+        const attr = attributes[key]!;
 
-        return {
-            type: 'attribute',
-            name: {
-                uri: attribute.uri,
-                local: attribute.local,
-            },
-            value: attribute.value,
-        };
+        return attribute(namespaced(attr.uri)(attr.local), attr.value);
     });
 }
