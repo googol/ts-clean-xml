@@ -6,10 +6,10 @@ export const hasName = (name: XmlNameSource) => (element: XmlElement | Attribute
     return element.name.uri === namespacedName.uri && element.name.local === namespacedName.local;
 };
 
-export const getChildElements = (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement) as XmlElement[];
+export const getChildElements = (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement);
 export const getChildElementsNamed = (name: XmlNameSource) => (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement).filter(hasName(name));
 
-export const getChildElementsByPath = (names: XmlNameSource[]) => (element: XmlElement): XmlElement[] => {
+export const getChildElementsByPath = (names: ReadonlyArray<XmlNameSource>) => (element: XmlElement): XmlElement[] => {
     const selectedElements = [element];
     const step = (acc: XmlElement[], name: XmlNameSource) => chain(getChildElementsNamed(name))(acc);
 

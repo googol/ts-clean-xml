@@ -1,4 +1,4 @@
-export const chain = <T, R>(selector: (value: T) => R[]) => (input: T[]): R[] => {
+export const chain = <T, R>(selector: (value: T) => ReadonlyArray<R>) => (input: ReadonlyArray<T>): R[] => {
     const result: R[] = [];
     for (const value of input) {
         for (const mappedValue of selector(value)) {
@@ -8,7 +8,7 @@ export const chain = <T, R>(selector: (value: T) => R[]) => (input: T[]): R[] =>
     return result;
 };
 
-export const reduce = <T, R>(reducer: (acc: R, current: T) => R) => (initial: R) => (values: T[]): R => {
+export const reduce = <T, R>(reducer: (acc: R, current: T) => R) => (initial: R) => (values: ReadonlyArray<T>): R => {
     let accumulator = initial;
 
     for (const value of values) {
