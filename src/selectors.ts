@@ -9,11 +9,47 @@ export const hasName = (name: XmlNameSource) => (element: XmlElement | Attribute
 export const getChildElements = (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement);
 export const getChildElementsNamed = (name: XmlNameSource) => (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement).filter(hasName(name));
 
+export const getFirstChildElement = (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElements(element);
+    if (childElements.length > 0) {
+        return childElements[0];
+    }
+    return undefined;
+};
+export const getFirstChildElementNamed = (name: XmlNameSource) => (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElementsNamed(name)(element);
+    if (childElements.length > 0) {
+        return childElements[0];
+    }
+    return undefined;
+};
+
+export const getSingleChildElement = (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElements(element);
+    if (childElements.length === 1) {
+        return childElements[0];
+    }
+    return undefined;
+};
+export const getSingleChildElementNamed = (name: XmlNameSource) => (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElementsNamed(name)(element);
+    if (childElements.length === 1) {
+        return childElements[0];
+    }
+    return undefined;
+};
+
 export const getChildElementsByPath = (names: ReadonlyArray<XmlNameSource>) => (element: XmlElement): XmlElement[] => {
     const selectedElements = [element];
     const step = (acc: XmlElement[], name: XmlNameSource) => chain(getChildElementsNamed(name))(acc);
 
     return reduce(step)(selectedElements)(names);
+};
+
+export const getSingleChildElementByPath = (names: ReadonlyArray<XmlNameSource>) => (element: XmlElement): XmlElement | undefined => {
+    const step = (acc: XmlElement | undefined, name: XmlNameSource) => acc !== undefined ? getSingleChildElementNamed(name)(acc) : undefined;
+
+    return reduce(step)(element)(names);
 };
 
 export const getDescendantNodes = (element: XmlElement): ChildNode[] => {
