@@ -90,17 +90,27 @@ For typescript this works as a type guard.
 
 `hasTextValue`: takes a string value and an `XmlElement`, and returns true if the given value is the only content of the element.
 
+`hasSingleChildMatching`: takes a predicate and an `XmlElement` and returns true if the element has exactly one child element matching the predicate
+
+`hasAnyChildMatching`: takes a predicate and an `XmlElement` and returns true if the element has at least one element matching the predicate
+
 #### Selectors
 
 `getChildElements`: returns all children that are elements for a given `XmlElement`.
+
+`getChildElementsMatching`: returns all children that are elements for a given `XmlElement` that match the given predicate.
 
 `getChildElementsNamed`: returns all children that are elements for a given `XmlElement` that have the given name.
 
 `getFirstChildElement`: returns the first child element of the given `XmlElement` or undefined if there are no children
 
+`getFirstChildElementMatching`: returns the first child element of the given `XmlElement` that matches the given predicate, or undefined if there are no matching child elements
+
 `getFirstChildElementNamed`: returns the first child element of the given `XmlElement` that has the given name, or undefined if there are no child elements with that name
 
 `getSingleChildElement`: returns the only child element of the given `XmlElement` or undefined if there are no or multiple children
+
+`getSingleChildElementMatching`: returns the only child element of the given `XmlElement` that matches the given predicate, or undefined if there are none or multiple child matching elements
 
 `getSingleChildElementNamed`: returns the only child element of the given `XmlElement` that has the given name, or undefined if there are none or multiple child elements with that name
 

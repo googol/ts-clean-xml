@@ -7,10 +7,18 @@ export const hasName = (name: XmlNameSource) => (element: XmlElement | Attribute
 };
 
 export const getChildElements = (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement);
-export const getChildElementsNamed = (name: XmlNameSource) => (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement).filter(hasName(name));
+export const getChildElementsMatching = (predicate: (element: XmlElement) => boolean) => (element: XmlElement): XmlElement[] => element.children.filter(isXmlElement).filter(predicate);
+export const getChildElementsNamed = (name: XmlNameSource) => getChildElementsMatching(hasName(name));
 
 export const getFirstChildElement = (element: XmlElement): XmlElement | undefined => {
     const childElements = getChildElements(element);
+    if (childElements.length > 0) {
+        return childElements[0];
+    }
+    return undefined;
+};
+export const getFirstChildElementMatching = (predicate: (element: XmlElement) => boolean) => (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElementsMatching(predicate)(element);
     if (childElements.length > 0) {
         return childElements[0];
     }
@@ -26,6 +34,13 @@ export const getFirstChildElementNamed = (name: XmlNameSource) => (element: XmlE
 
 export const getSingleChildElement = (element: XmlElement): XmlElement | undefined => {
     const childElements = getChildElements(element);
+    if (childElements.length === 1) {
+        return childElements[0];
+    }
+    return undefined;
+};
+export const getSingleChildElementMatching = (predicate: (element: XmlElement) => boolean) => (element: XmlElement): XmlElement | undefined => {
+    const childElements = getChildElementsMatching(predicate)(element);
     if (childElements.length === 1) {
         return childElements[0];
     }
@@ -82,6 +97,9 @@ export const getAttributeValue = (attributeName: XmlNameSource) => (element: Xml
     const attr = element.attributes.find(hasName(attributeName));
     return attr === undefined ? undefined : attr.value;
 };
+
+export const hasSingleChildMatching = (predicate: (element: XmlElement) => boolean) => (element: XmlElement): boolean => getSingleChildElementMatching(predicate)(element) !== undefined;
+export const hasAnyChildMatching = (predicate: (element: XmlElement) => boolean) => (element: XmlElement): boolean => getFirstChildElementMatching(predicate)(element) !== undefined;
 
 export const hasAttribute = (attributeName: XmlNameSource) => (element: XmlElement): boolean => getAttribute(attributeName)(element) !== undefined;
 export const hasAttributeValue = (attributeValue: string) => (attributeName: XmlNameSource) => (element: XmlElement): boolean => getAttributeValue(attributeName)(element) === attributeValue;
