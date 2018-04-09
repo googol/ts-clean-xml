@@ -96,6 +96,14 @@ For typescript this works as a type guard.
 
 `getChildElementsNamed`: returns all children that are elements for a given `XmlElement` that have the given name.
 
+`getFirstChildElement`: returns the first child element of the given `XmlElement` or undefined if there are no children
+
+`getFirstChildElementNamed`: returns the first child element of the given `XmlElement` that has the given name, or undefined if there are no child elements with that name
+
+`getSingleChildElement`: returns the only child element of the given `XmlElement` or undefined if there are no or multiple children
+
+`getSingleChildElementNamed`: returns the only child element of the given `XmlElement` that has the given name, or undefined if there are none or multiple child elements with that name
+
 `getChildElementsByPath`: given a list of names and a starting element, returns the elements that are at the end of the path formed by selecting the children named by the next name in the name list
 
 `getDescendantNodes`: returns all descendant nodes for a given element, that is, all child nodes of the element, and their chidren etc. Walks through the nodes in depth first order.
