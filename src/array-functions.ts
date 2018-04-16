@@ -8,7 +8,9 @@ export const chain = <T, R>(selector: (value: T) => ReadonlyArray<R>) => (input:
     return result;
 };
 
-export const reduce = <T, R>(reducer: (acc: R, current: T) => R) => (initial: R) => (values: ReadonlyArray<T>): R => {
+export type ReduceStep<Accumulator, Value> = (acc: Accumulator, current: Value) => Accumulator;
+
+export const reduce = <T, R>(reducer: ReduceStep<R, T>) => (initial: R) => (values: ReadonlyArray<T>): R => {
     let accumulator = initial;
 
     for (const value of values) {
