@@ -19,3 +19,13 @@ export const reduce = <T, R>(reducer: ReduceStep<R, T>) => (initial: R) => (valu
 
     return accumulator;
 };
+
+export const flatten = <T>(input: ReadonlyArray<ReadonlyArray<T>>): T[] => {
+    const result = [];
+    for (const outer of input) {
+        for (const inner of outer) {
+            result.push(inner);
+        }
+    }
+    return result;
+};
