@@ -4,10 +4,10 @@ An xml parser with a clean predictable object model, created for use with typesc
 
 ## Installation
 
-Just install from npm:
+Just install from npm. You will also need the `ts-optional-type` package for the return type of some of the selectors, and `ts-optionals` for functions that manipulate those types:
 
 ```sh
-npm install ts-clean-xml
+npm install ts-clean-xml ts-optionals ts-optional-type
 ```
 
 ## Usage
@@ -84,9 +84,9 @@ For typescript this works as a type guard.
 
 `hasName`: takes a name (`XmlName` or string) and an `XmlElement` or an `Attribute` and returns true if the name matches the element or attribute.
 
-`hasAttribute`: takes an attribute name (`XmlName` or string) and an `XmlElement` and retusn true if the element has an attribute with the given name.
+`hasAttribute`: takes an attribute name (`XmlName` or string) and an `XmlElement` and returns true if the element has an attribute with the given name.
 
-`hasAttributeValue`: takes a string value, an attribute name (`XmlName` or string) and an `XmlElement` and retusn true if the element has an attribute with the given name and value.
+`hasAttributeValue`: takes a string value, an attribute name (`XmlName` or string) and an `XmlElement` and returns true if the element has an attribute with the given name and value.
 
 `hasTextValue`: takes a string value and an `XmlElement`, and returns true if the given value is the only content of the element.
 
@@ -102,17 +102,17 @@ For typescript this works as a type guard.
 
 `getChildElementsNamed`: returns all children that are elements for a given `XmlElement` that have the given name.
 
-`getFirstChildElement`: returns the first child element of the given `XmlElement` or undefined if there are no children
+`getFirstChildElement`: returns the first child element of the given `XmlElement` or `None` if there are no children
 
-`getFirstChildElementMatching`: returns the first child element of the given `XmlElement` that matches the given predicate, or undefined if there are no matching child elements
+`getFirstChildElementMatching`: returns the first child element of the given `XmlElement` that matches the given predicate, or `None` if there are no matching child elements
 
-`getFirstChildElementNamed`: returns the first child element of the given `XmlElement` that has the given name, or undefined if there are no child elements with that name
+`getFirstChildElementNamed`: returns the first child element of the given `XmlElement` that has the given name, or `None` if there are no child elements with that name
 
-`getSingleChildElement`: returns the only child element of the given `XmlElement` or undefined if there are no or multiple children
+`getSingleChildElement`: returns the only child element of the given `XmlElement` or `None` if there are no or multiple children
 
-`getSingleChildElementMatching`: returns the only child element of the given `XmlElement` that matches the given predicate, or undefined if there are none or multiple child matching elements
+`getSingleChildElementMatching`: returns the only child element of the given `XmlElement` that matches the given predicate, or `None` if there are none or multiple child matching elements
 
-`getSingleChildElementNamed`: returns the only child element of the given `XmlElement` that has the given name, or undefined if there are none or multiple child elements with that name
+`getSingleChildElementNamed`: returns the only child element of the given `XmlElement` that has the given name, or `None` if there are none or multiple child elements with that name
 
 `getChildElementsByPath`: given a list of names and a starting element, returns the elements that are at the end of the path formed by selecting the children named by the next name in the name list
 
@@ -124,6 +124,6 @@ For typescript this works as a type guard.
 
 `getContainedText`: returns all text content inside a given element, in depth first order. Like `Node.textContent` in the DOM.
 
-`getAttribute`: returns the attribute with the given name on the given element. Returns undefined if the element doesn't have an attribute matching the name.
+`getAttribute`: returns the attribute with the given name on the given element. Returns `None` if the element doesn't have an attribute matching the name.
 
-`getAttributeValue`: returns the value of an attribute with the given name on the given element. Returns undefined if the element doesn't have an attribute matching the name.
+`getAttributeValue`: returns the value of an attribute with the given name on the given element. Returns `None` if the element doesn't have an attribute matching the name.
