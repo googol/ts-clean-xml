@@ -1,8 +1,9 @@
 import { XmlElement, Attribute, XmlNameSource, ChildNode, isXmlElement, isTextNode, fromXmlNameSource } from './model';
 import { chain, reduce, ReduceStep } from './array-functions';
-import { F1, F2, F3, Predicate } from './function-helpers';
+import { pipe, F1, F2, F3, Predicate } from './function-helpers';
+import * as O from 'ts-optionals';
 
-export type Result<T> = T | undefined;
+export type Result<T> = O.Optional<T>;
 export type ResultSet<T> = T[];
 
 export const hasName: F2<XmlNameSource, XmlElement | Attribute, boolean> =
@@ -21,58 +22,40 @@ export const getChildElementsNamed: F2<XmlNameSource, XmlElement, ResultSet<XmlE
     (name: XmlNameSource) => getChildElementsMatching(hasName(name));
 
 export const getFirstChildElement: F1<XmlElement, Result<XmlElement>> =
-    (element) => {
-        const childElements = getChildElements(element);
-        if (childElements.length > 0) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    pipe(
+        getChildElements,
+        O.firstFromArray,
+    );
 
 export const getFirstChildElementMatching: F2<Predicate<XmlElement>, XmlElement, Result<XmlElement>> =
-    (predicate) => (element) => {
-        const childElements = getChildElementsMatching(predicate)(element);
-        if (childElements.length > 0) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    (predicate) => pipe(
+        getChildElementsMatching(predicate),
+        O.firstFromArray,
+    );
 
 export const getFirstChildElementNamed: F2<XmlNameSource, XmlElement, Result<XmlElement>> =
-    (name) => (element) => {
-        const childElements = getChildElementsNamed(name)(element);
-        if (childElements.length > 0) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    (name) => pipe(
+        getChildElementsNamed(name),
+        O.firstFromArray,
+    );
 
 export const getSingleChildElement: F1<XmlElement, Result<XmlElement>> =
-    (element) => {
-        const childElements = getChildElements(element);
-        if (childElements.length === 1) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    pipe(
+        getChildElements,
+        O.singleFromArray,
+    );
 
 export const getSingleChildElementMatching: F2<Predicate<XmlElement>, XmlElement, Result<XmlElement>> =
-    (predicate) => (element) => {
-        const childElements = getChildElementsMatching(predicate)(element);
-        if (childElements.length === 1) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    (predicate) => pipe(
+        getChildElementsMatching(predicate),
+        O.singleFromArray,
+    );
 
 export const getSingleChildElementNamed: F2<XmlNameSource, XmlElement, Result<XmlElement>> =
-    (name) => (element) => {
-        const childElements = getChildElementsNamed(name)(element);
-        if (childElements.length === 1) {
-            return childElements[0];
-        }
-        return undefined;
-    };
+    (name) => pipe(
+        getChildElementsNamed(name),
+        O.singleFromArray,
+    );
 
 export const getChildElementsByPath: F2<ReadonlyArray<XmlNameSource>, XmlElement, ResultSet<XmlElement>> =
     (names) => (element) => {
@@ -84,9 +67,9 @@ export const getChildElementsByPath: F2<ReadonlyArray<XmlNameSource>, XmlElement
 
 export const getSingleChildElementByPath: F2<ReadonlyArray<XmlNameSource>, XmlElement, Result<XmlElement>> =
     (names) => (element) => {
-        const step: ReduceStep<XmlElement | undefined, XmlNameSource> = (acc, name) => acc !== undefined ? getSingleChildElementNamed(name)(acc) : undefined;
+        const step: ReduceStep<Result<XmlElement>, XmlNameSource> = (acc, name) => O.chain(getSingleChildElementNamed(name))(acc);
 
-        return reduce(step)(element)(names);
+        return reduce(step)(O.of(element))(names);
     };
 
 export const getDescendantNodes: F1<XmlElement, ResultSet<ChildNode>> =
@@ -120,31 +103,50 @@ export const getContainedText: F1<XmlElement, string> =
     (element) => getDescendantNodes(element).filter(isTextNode).map((node) => node.content).join('');
 
 export const getAttribute: F2<XmlNameSource, XmlElement, Result<Attribute>> =
-    (attributeName) => (element) => element.attributes.find(hasName(attributeName));
+    (attributeName) => (element) => {
+        const result = element.attributes.find(hasName(attributeName));
+        return result !== undefined ? O.of(result) : O.None();
+    };
 
 export const getAttributeValue: F2<XmlNameSource, XmlElement, Result<string>> =
-    (attributeName) => (element) => {
-        const attr = element.attributes.find(hasName(attributeName));
-        return attr === undefined ? undefined : attr.value;
-    };
+    (attributeName) => pipe(
+        getAttribute(attributeName),
+        O.map((attr) => attr.value),
+    );
 
 export const hasSingleChildMatching: F2<Predicate<XmlElement>, XmlElement, boolean> =
-    (predicate) => (element) => getSingleChildElementMatching(predicate)(element) !== undefined;
+    (predicate) => pipe(
+        getSingleChildElementMatching(predicate),
+        O.isSome,
+    );
 
 export const hasAnyChildMatching: F2<Predicate<XmlElement>, XmlElement, boolean> =
-    (predicate) => (element) => getFirstChildElementMatching(predicate)(element) !== undefined;
+    (predicate) => pipe(
+        getFirstChildElementMatching(predicate),
+        O.isSome,
+    );
 
 export const hasAttribute: F2<XmlNameSource, XmlElement, boolean> =
-    (attributeName) => (element) => getAttribute(attributeName)(element) !== undefined;
+    (attributeName) => pipe(
+        getAttribute(attributeName),
+        O.isSome,
+    );
 
 export const hasAttributeValue: F3<string, XmlNameSource, XmlElement, boolean> =
-    (attributeValue) => (attributeName) => (element) => getAttributeValue(attributeName)(element) === attributeValue;
+    (attributeValue) => (attributeName) => pipe(
+        getAttributeValue(attributeName),
+        O.caseOf({
+            some: (value) => value === attributeValue,
+            none: () => false,
+        }),
+    );
 
 export const hasTextValue: F2<string, XmlElement, boolean> =
-    (value) => (element): boolean => {
-        if (element.children.length !== 1) {
-            return false;
-        }
-        const single = element.children[0];
-        return isTextNode(single) && single.content === value;
-    };
+    (value) => pipe(
+        (e: XmlElement) => e.children,
+        O.singleFromArray,
+        O.caseOf({
+            some: (single) => isTextNode(single) && single.content === value,
+            none: () => false,
+        }),
+    );
